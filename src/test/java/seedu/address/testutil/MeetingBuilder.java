@@ -33,7 +33,7 @@ public class MeetingBuilder {
      * Initializes the PersonBuilder with the data of {@code personToCopy}.
      */
     public MeetingBuilder(Meeting meetingToCopy) {
-        meetingName = meetingToCopy.getName();
+        meetingName = meetingToCopy.getMeetingName();
         date = meetingToCopy.getDate();
         time = meetingToCopy.getTime();
     }

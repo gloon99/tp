@@ -117,7 +117,7 @@ public class ParserUtil {
     public static MeetingName parseMeetingName(String meetingName) throws ParseException {
         requireNonNull(meetingName);
         String trimmedName = meetingName.trim();
-        if (!MeetingName.isValidName(trimmedName)) {
+        if (!MeetingName.isValidMeetingName(trimmedName)) {
             throw new ParseException(MeetingName.MESSAGE_CONSTRAINTS);
         }
         return new MeetingName(trimmedName);

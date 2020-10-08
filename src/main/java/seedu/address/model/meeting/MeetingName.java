@@ -18,18 +18,18 @@ public class MeetingName {
     /**
      * Constructs a {@code Name}.
      *
-     * @param name A valid name.
+     * @param meetingMame A valid meeting name.
      */
-    public MeetingName(String name) {
-        requireNonNull(name);
-        checkArgument(isValidName(name), MESSAGE_CONSTRAINTS);
-        meetingName = name;
+    public MeetingName(String meetingMame) {
+        requireNonNull(meetingMame);
+        checkArgument(isValidMeetingName(meetingMame), MESSAGE_CONSTRAINTS);
+        meetingName = meetingMame;
     }
 
     /**
      * Returns true if a given string is a valid name.
      */
-    public static boolean isValidName(String test) {
+    public static boolean isValidMeetingName(String test) {
         return test.matches(VALIDATION_REGEX);
     }
 
@@ -42,8 +42,8 @@ public class MeetingName {
     @Override
     public boolean equals(Object other) {
         return other == this // short circuit if same object
-                || (other instanceof seedu.address.model.person.Name // instanceof handles nulls
-                && meetingName.equals(((seedu.address.model.person.Name) other).fullName)); // state check
+                || (other instanceof MeetingName // instanceof handles nulls
+                && meetingName.equals(((MeetingName) other).meetingName)); // state check
     }
 
     @Override

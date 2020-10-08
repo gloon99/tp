@@ -12,7 +12,7 @@ import seedu.address.model.util.SampleDataUtil;
 
 public class Meeting {
     // Identity fields
-    private final MeetingName name;
+    private final MeetingName meetingName;
     private final Date date;
     private final Time time;
     private Set<Person> participants;
@@ -22,7 +22,7 @@ public class Meeting {
      */
     public Meeting(MeetingName name, Date date, Time time) {
         requireAllNonNull(name, date, time);
-        this.name = name;
+        this.meetingName = name;
         this.date = date;
         this.time = time;
 
@@ -32,8 +32,8 @@ public class Meeting {
         participants.addAll(persons);
     }
 
-    public MeetingName getName() {
-        return this.name;
+    public MeetingName getMeetingName() {
+        return this.meetingName;
     }
 
     public Date getDate() {
@@ -57,7 +57,7 @@ public class Meeting {
         }
 
         return otherMeeting != null
-                && otherMeeting.getName().equals(getName())
+                && otherMeeting.getMeetingName().equals(getMeetingName())
                 && otherMeeting.getDate().equals(getDate())
                 && otherMeeting.getTime().equals(getTime());
     }
@@ -77,7 +77,7 @@ public class Meeting {
         }
 
         Meeting otherMeeting = (Meeting) other;
-        return otherMeeting.getName().equals(getName())
+        return otherMeeting.getMeetingName().equals(getMeetingName())
                 && otherMeeting.getDate().equals(getDate())
                 && otherMeeting.getTime().equals(getTime());
     }
@@ -85,13 +85,13 @@ public class Meeting {
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, date, time);
+        return Objects.hash(meetingName, date, time);
     }
 
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append(getName())
+        builder.append(getMeetingName())
                 .append(" Date: ")
                 .append(getDate())
                 .append(" Time: ")

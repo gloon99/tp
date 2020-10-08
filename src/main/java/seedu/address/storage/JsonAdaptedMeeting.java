@@ -36,7 +36,7 @@ public class JsonAdaptedMeeting {
      * Constructs a {@code JsonAdaptedMeeting} with the given meeting details.
      */
     public JsonAdaptedMeeting(Meeting source) {
-        name = source.getName().meetingName;
+        name = source.getMeetingName().meetingName;
         date = source.getDate().value;
         time = source.getTime().value;
     }
@@ -51,7 +51,7 @@ public class JsonAdaptedMeeting {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                                                             MeetingName.class.getSimpleName()));
         }
-        if (!MeetingName.isValidName(name)) {
+        if (!MeetingName.isValidMeetingName(name)) {
             throw new IllegalValueException(MeetingName.MESSAGE_CONSTRAINTS);
         }
         final MeetingName modelName = new MeetingName(name);
