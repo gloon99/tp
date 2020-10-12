@@ -1,11 +1,13 @@
 package seedu.address.ui;
 
+import java.util.Comparator;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.module.Module;
-
 
 /**
  * An UI component that displays information of a {@code Person}.
@@ -31,9 +33,8 @@ public class ModuleCard extends UiPart<Region> {
     @FXML
     private Label name;
     @FXML
-    private Label description;
-    @FXML
-    private Label professor;
+    private FlowPane participants;
+
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -42,9 +43,12 @@ public class ModuleCard extends UiPart<Region> {
         super(FXML);
         this.module = module;
         id.setText(displayedIndex + ". ");
-        name.setText(module.getName());
-        description.setText(module.getDescription());
-        professor.setText(module.getProfessor());
+        name.setText(module.getModuleName().getModuleName());
+        module.getClassmates().stream()
+                .sorted(Comparator.comparing(participant -> participant.getName().fullName))
+                .forEach(participant -> participants.getChildren()
+                        .add(new Label(participant.getName().getFirstName())));
+
     }
 
     @Override

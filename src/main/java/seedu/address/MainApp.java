@@ -19,16 +19,20 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.MeetingBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
+import seedu.address.model.ModuleBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyMeetingBook;
+import seedu.address.model.ReadOnlyModuleBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.util.SampleDataUtil;
 import seedu.address.storage.AddressBookStorage;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonMeetingBookStorage;
+import seedu.address.storage.JsonModuleBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.MeetingBookStorage;
+import seedu.address.storage.ModuleBookStorage;
 import seedu.address.storage.Storage;
 import seedu.address.storage.StorageManager;
 import seedu.address.storage.UserPrefsStorage;
@@ -62,7 +66,8 @@ public class MainApp extends Application {
         UserPrefs userPrefs = initPrefs(userPrefsStorage);
         AddressBookStorage addressBookStorage = new JsonAddressBookStorage(userPrefs.getAddressBookFilePath());
         MeetingBookStorage meetingBookStorage = new JsonMeetingBookStorage(userPrefs.getMeetingBookFilePath());
-        storage = new StorageManager(addressBookStorage, meetingBookStorage, userPrefsStorage);
+        ModuleBookStorage moduleBookStorage = new JsonModuleBookStorage(userPrefs.getModuleBookFilePath());
+        storage = new StorageManager(addressBookStorage, meetingBookStorage, moduleBookStorage, userPrefsStorage);
 
         initLogging(config);
 
@@ -111,7 +116,23 @@ public class MainApp extends Application {
             meetingBookInitialData = new MeetingBook();
         }
 
-        return new ModelManager(addressBookInitialData, meetingBookInitialData, userPrefs);
+        Optional<ReadOnlyModuleBook> moduleBookOptional;
+        ReadOnlyModuleBook moduleBookInitialData;
+        try {
+            moduleBookOptional = storage.readModuleBook();
+            if (!moduleBookOptional.isPresent()) {
+                logger.info("Data file not found. Will be starting with a sample AddressBook");
+            }
+            moduleBookInitialData = moduleBookOptional.orElseGet(SampleDataUtil::getSampleModuleBook);
+        } catch (DataConversionException e) {
+            logger.warning("Data file not in the correct format. Will be starting with an empty AddressBook");
+            moduleBookInitialData = new ModuleBook();
+        } catch (IOException e) {
+            logger.warning("Problem while reading from the file. Will be starting with an empty AddressBook");
+            moduleBookInitialData = new ModuleBook();
+        }
+
+        return new ModelManager(addressBookInitialData, meetingBookInitialData, moduleBookInitialData, userPrefs);
     }
 
     private void initLogging(Config config) {

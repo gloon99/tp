@@ -12,6 +12,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.meeting.Date;
 import seedu.address.model.meeting.MeetingName;
 import seedu.address.model.meeting.Time;
+import seedu.address.model.module.ModuleName;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
@@ -131,6 +132,21 @@ public class ParserUtil {
             throw new ParseException(MeetingName.MESSAGE_CONSTRAINTS);
         }
         return new MeetingName(trimmedName);
+    }
+
+    /**
+     * Parses a {@code String moduleName} into a {@code moduleName}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code moduleName} is invalid.
+     */
+    public static ModuleName parseModuleName(String moduleName) throws ParseException {
+        requireNonNull(moduleName);
+        String trimmedName = moduleName.trim();
+        if (!ModuleName.isValidModuleName(trimmedName)) {
+            throw new ParseException(ModuleName.MESSAGE_CONSTRAINTS);
+        }
+        return new ModuleName(trimmedName);
     }
 
     /**

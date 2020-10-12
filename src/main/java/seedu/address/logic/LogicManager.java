@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
@@ -13,10 +12,12 @@ import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.MeetingBookParser;
+import seedu.address.logic.parser.ModuleBookParser;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyMeetingBook;
+import seedu.address.model.ReadOnlyModuleBook;
 import seedu.address.model.meeting.Meeting;
 import seedu.address.model.module.Module;
 import seedu.address.model.person.Person;
@@ -33,6 +34,7 @@ public class LogicManager implements Logic {
     private final Storage storage;
     private final AddressBookParser addressBookParser;
     private final MeetingBookParser meetingBookParser;
+    private final ModuleBookParser moduleBookParser;
 
     /**
      * Constructs a {@code LogicManager} with the given {@code Model} and {@code Storage}.
@@ -42,6 +44,7 @@ public class LogicManager implements Logic {
         this.storage = storage;
         addressBookParser = new AddressBookParser();
         meetingBookParser = new MeetingBookParser();
+        moduleBookParser = new ModuleBookParser();
     }
 
     @Override
@@ -52,8 +55,11 @@ public class LogicManager implements Logic {
 
         CommandResult commandResult;
         Command command;
+
         if (firstWord.equals("meeting")) {
             command = meetingBookParser.parseCommand(commandText);
+        } else if (firstWord.equals("module")) {
+            command = moduleBookParser.parseCommand(commandText);
         } else {
             command = addressBookParser.parseCommand(commandText);
         }
@@ -62,6 +68,7 @@ public class LogicManager implements Logic {
         try {
             storage.saveAddressBook(model.getAddressBook());
             storage.saveMeetingBook(model.getMeetingBook());
+            storage.saveModuleBook(model.getModuleBook());
         } catch (IOException ioe) {
             throw new CommandException(FILE_OPS_ERROR_MESSAGE + ioe, ioe);
         }
@@ -88,21 +95,21 @@ public class LogicManager implements Logic {
     public ReadOnlyMeetingBook getMeetingBook() {
         return model.getMeetingBook();
     }
+    @Override
+    public ReadOnlyModuleBook getModuleBook() {
+        return model.getModuleBook();
+    }
+
+    @Override
+    public ObservableList<Module> getFilteredModuleList() {
+        return model.getFilteredModuleList();
+    }
 
     @Override
     public ObservableList<Meeting> getFilteredMeetingList() {
         return model.getFilteredMeetingList();
     }
 
-    @Override
-    public ObservableList<Module> getFilteredModuleList() {
-        ObservableList<Module> list = FXCollections.observableArrayList();
-        list.add(new Module("CS2103", "Software Engineering"));
-        list.add(new Module("CS6969", "Human Biology"));
-        list.add(new Module("ST2334", "Statistics"));
-        list.add(new Module("EL2020", "English Literature"));
-        return list;
-    }
 
     @Override
     public Path getAddressBookFilePath() {
@@ -117,5 +124,10 @@ public class LogicManager implements Logic {
     @Override
     public void setGuiSettings(GuiSettings guiSettings) {
         model.setGuiSettings(guiSettings);
+    }
+
+    @Override
+    public Path getModuleBookFilePath() {
+        return model.getModuleBookFilePath();
     }
 }

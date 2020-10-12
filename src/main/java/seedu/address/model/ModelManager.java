@@ -13,6 +13,8 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.meeting.Meeting;
 import seedu.address.model.meeting.MeetingName;
+import seedu.address.model.module.Module;
+import seedu.address.model.module.ModuleName;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 
@@ -24,30 +26,36 @@ public class ModelManager implements Model {
 
     private final AddressBook addressBook;
     private final MeetingBook meetingBook;
+    private final ModuleBook moduleBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
     private final FilteredList<Meeting> filteredMeetings;
+    private final FilteredList<Module> filteredModules;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
-    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyMeetingBook meetingBook, ReadOnlyUserPrefs userPrefs) {
+    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyMeetingBook meetingBook,
+                        ReadOnlyModuleBook moduleBook, ReadOnlyUserPrefs userPrefs) {
         super();
-        requireAllNonNull(addressBook, meetingBook, userPrefs);
+        requireAllNonNull(addressBook, meetingBook, userPrefs, moduleBook);
 
         logger.fine("Initializing with address book: " + addressBook
                 + " and meetingBook " + meetingBook
+                + " and moduleBook " + moduleBook
                 + " and user prefs " + userPrefs);
 
         this.addressBook = new AddressBook(addressBook);
         this.meetingBook = new MeetingBook(meetingBook);
+        this.moduleBook = new ModuleBook(moduleBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         filteredMeetings = new FilteredList<>(this.meetingBook.getMeetingList());
+        filteredModules = new FilteredList<>(this.moduleBook.getModuleList());
     }
 
     public ModelManager() {
-        this(new AddressBook(), new MeetingBook(), new UserPrefs());
+        this(new AddressBook(), new MeetingBook(), new ModuleBook(), new UserPrefs());
     }
 
     //=========== UserPrefs ==================================================================================
@@ -95,6 +103,18 @@ public class ModelManager implements Model {
         requireNonNull(meetingBookFilePath);
         userPrefs.setMeetingBookFilePath(meetingBookFilePath);
     }
+
+    @Override
+    public Path getModuleBookFilePath() {
+        return userPrefs.getModuleBookFilePath();
+    }
+
+    @Override
+    public void setModuleBookFilePath(Path moduleBookFilePath) {
+        requireNonNull(moduleBookFilePath);
+        userPrefs.setMeetingBookFilePath(moduleBookFilePath);
+    }
+
 
     //=========== AddressBook ================================================================================
 
@@ -153,7 +173,7 @@ public class ModelManager implements Model {
     public boolean hasMeeting(Meeting meeting) {
         requireNonNull(meeting);
         return meetingBook.hasMeeting(meeting);
-    };
+    }
 
     @Override
     public boolean hasMeetingName(MeetingName meetingName) {
@@ -170,7 +190,32 @@ public class ModelManager implements Model {
     public void addMeeting(Meeting meeting) {
         meetingBook.addMeeting(meeting);
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-    };
+    }
+    //=========== Modules ===================================================================================
+    @Override
+    public void addModule(Module module) {
+        moduleBook.addModule(module);
+        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+    }
+
+    /**
+     * Returns true if a module with the same module name as {@code module} exists in the address book.
+     */
+    @Override
+    public boolean hasModuleName(ModuleName moduleName) {
+        requireNonNull(moduleName);
+        return moduleBook.hasModuleName(moduleName);
+    }
+
+    @Override
+    public ReadOnlyModuleBook getModuleBook() {
+        return moduleBook;
+    }
+
+    @Override
+    public void setModuleBook(ReadOnlyModuleBook newBook) {
+        this.moduleBook.resetData(newBook);
+    }
 
     //=========== Filtered Person List Accessors =============================================================
 
@@ -205,6 +250,16 @@ public class ModelManager implements Model {
         requireNonNull(predicate);
         filteredMeetings.setPredicate(predicate);
     }
+
+    /**
+     * Returns an unmodifiable view of the list of {@code Person} backed by the internal list of
+     * {@code versionedAddressBook}
+     */
+    @Override
+    public ObservableList<Module> getFilteredModuleList() {
+        return filteredModules;
+    }
+
 
     @Override
     public boolean equals(Object obj) {

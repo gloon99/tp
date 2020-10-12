@@ -9,6 +9,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyMeetingBook;
+import seedu.address.model.ReadOnlyModuleBook;
 import seedu.address.model.meeting.Meeting;
 import seedu.address.model.module.Module;
 import seedu.address.model.person.Person;
@@ -68,4 +69,17 @@ public interface Logic {
      * Set the user prefs' GUI settings.
      */
     void setGuiSettings(GuiSettings guiSettings);
+
+    /**
+     * Returns the user prefs' module book file path.
+     */
+    Path getModuleBookFilePath();
+
+    /**
+     * Returns the ModuleBook.
+     *
+     * @see seedu.address.model.Model#getModuleBook()
+     */
+    ReadOnlyModuleBook getModuleBook();
+
 }
