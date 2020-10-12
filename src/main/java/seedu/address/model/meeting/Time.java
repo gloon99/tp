@@ -3,11 +3,19 @@ package seedu.address.model.meeting;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 public class Time {
     public static final String MESSAGE_CONSTRAINTS =
             "Times should be in the format HH:MM";
     public static final String VALIDATION_REGEX = "\\d{3,}";
+    public static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+    public static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("h:mm a");
+
+    // For DB storage. See Json AdaptedMeeting for use.
     public final String value;
+    public final LocalTime time;
 
     /**
      * Constructs a {@code Time}.
@@ -17,7 +25,8 @@ public class Time {
     public Time(String time) {
         requireNonNull(time);
         checkArgument(isValidTime(time), MESSAGE_CONSTRAINTS);
-        value = time;
+        this.value = time;
+        this.time = LocalTime.parse(time, INPUT_FORMAT);
     }
 
     /**
@@ -31,18 +40,18 @@ public class Time {
 
     @Override
     public String toString() {
-        return value;
+        return time.format(OUTPUT_FORMAT);
     }
 
     @Override
     public boolean equals(Object other) {
         return other == this // short circuit if same object
                 || (other instanceof Time // instanceof handles nulls
-                && value.equals(((Time) other).value)); // state check
+                && time.equals(((Time) other).time)); // state check
     }
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return time.hashCode();
     }
 }

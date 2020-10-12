@@ -217,6 +217,13 @@ public class ModelManager implements Model {
         this.moduleBook.resetData(newBook);
     }
 
+    @Override
+    public void setMeeting(Meeting target, Meeting editedMeeting) {
+        requireAllNonNull(target, editedMeeting);
+
+        meetingBook.setMeeting(target, editedMeeting);
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**

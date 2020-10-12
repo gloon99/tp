@@ -134,6 +134,14 @@ public interface Model {
      */
     void deleteMeeting(Meeting targetMeeting);
 
+    /**
+     * Replaces the given meeting {@code target} with {@code editedMeeting}.
+     * {@code target} must exist in the meeting book.
+     * The meeting identity of {@code editedMeeting} must not be the same
+     * as another existing meeting in the address book.
+     */
+    void setMeeting(Meeting target, Meeting editedMeeting);
+
     /** Returns an unmodifiable view of the filtered meeting list */
     ObservableList<Meeting> getFilteredMeetingList();
 

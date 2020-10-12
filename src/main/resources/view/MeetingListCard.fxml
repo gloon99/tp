@@ -27,7 +27,8 @@
         </Label>
         <Label fx:id="name" text="\$name" styleClass="cell_big_label" />
       </HBox>
-      <Label fx:id="datetime" styleClass="cell_small_label" text="\$datetime" />
+      <Label fx:id="time" styleClass="cell_small_label" text="\$datetime" />
+      <Label fx:id="date" styleClass="cell_small_label" text="\$datetime" />
       <FlowPane fx:id="participants" />
     </VBox>
   </GridPane>

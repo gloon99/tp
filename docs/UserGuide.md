@@ -137,7 +137,8 @@ Format: `meeting add n/MEETING_NAME d/MEETING_DATE t/MEETING_TIME m/MEMBERS`
 * Creates a meeting with the provided meeting name
 * All the fields must be provided
 * Date is in the YYYY-MM-dd format and time is in the HH:mm format
-* There can be multiple members separated by a ",".
+* There can be multiple members separated by a ","
+* Members added need to be contacts that are already existing in the address book
 
 Examples:
 *  `meeting add n/CS2103 weekly meeting d/2020-09-20 t/10:00 m/Jay, Roy, Jerryl, Yeeloon, Ekam`
@@ -161,15 +162,17 @@ Edits a given meeting. Listed below are the meeting details that can be changed:
 3. Time
 4. Contacts
 
-Format: `meeting edit MEETING_NAME [n/NEW_NAME] [d/NEW_DATE] [t/NEW_TIME] [cD/CONTACTS]… [cA/CONTACTS]…`
+Format: `meeting edit MEETING_NAME [n/NEW_NAME] [d/NEW_DATE] [t/NEW_TIME] [m/NEW_MEMBERS]…`
 
 * Edits any of the details of the meeting 
-* `n/NEW_NAME`, `d/NEW_DATE`, `t/NEW_TIME`, `cD/CONTACTS` and `cA/CONTACTS` are all optional fields, but at least one of the optional fields must be provided
+* `n/NEW_NAME`, `d/NEW_DATE`, `t/NEW_TIME` and `m/NEW_MEMBERS` are all optional fields, but at least one of the optional fields must be provided
 * Date is in the YYYY-MM-dd format and time is in the HH:mm format
-* If there is more than one contact to be added or deleted, they should be separated by “,”
+* If there is more than one member to edit, they should be separated by “,”
+* All the newly provided fields will override previous fields
 
 Examples:
-* `meeting edit CS2103 Meeting n/CS2103 Team Project Meeting d/2020:09:27 t/14:00 cD/Ekam, Jay cA/Bob`
+* `meeting edit CS2103 Meeting d/2020-09-27 t/14:00` edits the date and time of CS2103 Meeting to be `2020-09-27` and `14:00` respectively
+* `meeting edit CS2103 Meeting n/CS2103 Group Discussion' edits the name of CS2103 Meeting to be `CS2103 Group Discussion`
 
 ### Listing all Meetings : `meeting list`
 

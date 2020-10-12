@@ -1,8 +1,9 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_MEMBERS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_MEMBER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 
@@ -33,13 +34,13 @@ public class AddMeetingCommand extends Command {
             + PREFIX_NAME + "MEETING NAME "
             + PREFIX_DATE + "DATE "
             + PREFIX_TIME + "TIME "
-            + "[" + PREFIX_MEMBERS + "MEMBERS]...\n"
+            + "[" + PREFIX_MEMBER + "MEMBERS]...\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "CS2103 weekly meeting "
             + PREFIX_DATE + "2020-09-20 "
             + PREFIX_TIME + "10:00 "
-            + PREFIX_MEMBERS + "Alex "
-            + PREFIX_MEMBERS + "Roy";
+            + PREFIX_MEMBER + "Alex "
+            + PREFIX_MEMBER + "Roy";
 
     public static final String MESSAGE_SUCCESS = "New meeting added: %1$s";
     public static final String MESSAGE_DUPLICATE_MEETING = "This meeting already exists in the meeting book";
@@ -54,10 +55,7 @@ public class AddMeetingCommand extends Command {
      * Creates an AddMeetingCommand to add the specified {@code Meeting}
      */
     public AddMeetingCommand(MeetingName meetingName, Date date, Time time, Set<Name> nameList) {
-        requireNonNull(meetingName);
-        requireNonNull(date);
-        requireNonNull(time);
-        requireNonNull(nameList);
+        requireAllNonNull(meetingName, date, time, nameList);
         this.meetingName = meetingName;
         this.date = date;
         this.time = time;
@@ -88,14 +86,14 @@ public class AddMeetingCommand extends Command {
             throw new CommandException(String.format(MESSAGE_NONEXISTENT_PERSON, nonExistentPersonNamesString));
         }
 
-        Set<Person> personList = new HashSet<>();
+        Set<Person> personSet = new HashSet<>();
         for (Name name : nameList) {
             List<Person> filteredList = model.getFilteredPersonList().stream()
                     .filter(person -> person.isSameName(name)).collect(Collectors.toList());
-            personList.addAll(filteredList);
+            personSet.addAll(filteredList);
         }
 
-        Meeting toAdd = new Meeting(meetingName, date, time, personList);
+        Meeting toAdd = new Meeting(meetingName, date, time, personSet);
 
         model.addMeeting(toAdd);
         return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd));

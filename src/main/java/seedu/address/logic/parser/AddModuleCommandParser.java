@@ -1,7 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_MEMBERS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_MEMBER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import java.util.Set;
@@ -21,15 +21,15 @@ public class AddModuleCommandParser implements Parser<AddModuleCommand> {
      */
     public AddModuleCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_MEMBERS);
+                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_MEMBER);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_MEMBERS)
+        if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_MEMBER)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddModuleCommand.MESSAGE_USAGE));
         }
 
         ModuleName moduleName = ParserUtil.parseModuleName(argMultimap.getValue(PREFIX_NAME).get());
-        Set<Name> nameList = ParserUtil.parseNames(argMultimap.getAllValues(PREFIX_MEMBERS));
+        Set<Name> nameList = ParserUtil.parseNames(argMultimap.getAllValues(PREFIX_MEMBER));
 
         return new AddModuleCommand(moduleName, nameList);
     }
