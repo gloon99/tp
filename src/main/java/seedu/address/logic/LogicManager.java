@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
@@ -17,6 +18,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyMeetingBook;
 import seedu.address.model.meeting.Meeting;
+import seedu.address.model.module.Module;
 import seedu.address.model.person.Person;
 import seedu.address.storage.Storage;
 
@@ -90,6 +92,16 @@ public class LogicManager implements Logic {
     @Override
     public ObservableList<Meeting> getFilteredMeetingList() {
         return model.getFilteredMeetingList();
+    }
+
+    @Override
+    public ObservableList<Module> getFilteredModuleList() {
+        ObservableList<Module> list = FXCollections.observableArrayList();
+        list.add(new Module("CS2103", "Software Engineering"));
+        list.add(new Module("CS6969", "Human Biology"));
+        list.add(new Module("ST2334", "Statistics"));
+        list.add(new Module("EL2020", "English Literature"));
+        return list;
     }
 
     @Override

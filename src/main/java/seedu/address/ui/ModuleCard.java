@@ -1,20 +1,18 @@
 package seedu.address.ui;
 
-import java.util.Comparator;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import seedu.address.model.meeting.Meeting;
+import seedu.address.model.module.Module;
+
 
 /**
  * An UI component that displays information of a {@code Person}.
  */
-public class MeetingCard extends UiPart<Region> {
+public class ModuleCard extends UiPart<Region> {
 
-    private static final String FXML = "MeetingListCard.fxml";
+    private static final String FXML = "ModuleListCard.fxml";
 
     /**
      * Note: Certain keywords such as "location" and "resources" are reserved keywords in JavaFX.
@@ -24,7 +22,7 @@ public class MeetingCard extends UiPart<Region> {
      * @see <a href="https://github.com/se-edu/addressbook-level4/issues/336">The issue on AddressBook level 4</a>
      */
 
-    public final Meeting meeting;
+    public final Module module;
 
     @FXML
     private HBox cardPane;
@@ -33,23 +31,20 @@ public class MeetingCard extends UiPart<Region> {
     @FXML
     private Label name;
     @FXML
-    private Label datetime;
+    private Label description;
     @FXML
-    private FlowPane participants;
+    private Label professor;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
      */
-    public MeetingCard(Meeting meeting, int displayedIndex) {
+    public ModuleCard(Module module, int displayedIndex) {
         super(FXML);
-        this.meeting = meeting;
+        this.module = module;
         id.setText(displayedIndex + ". ");
-        name.setText(meeting.getMeetingName().meetingName);
-        datetime.setText(meeting.getDate().value + " " + meeting.getTime().value);
-        meeting.getMembers().stream()
-                .sorted(Comparator.comparing(participant -> participant.getName().fullName))
-                .forEach(participant -> participants.getChildren()
-                        .add(new Label(participant.getName().getFirstName())));
+        name.setText(module.getName());
+        description.setText(module.getDescription());
+        professor.setText(module.getProfessor());
     }
 
     @Override
@@ -60,13 +55,13 @@ public class MeetingCard extends UiPart<Region> {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof MeetingCard)) {
+        if (!(other instanceof ModuleCard)) {
             return false;
         }
 
         // state check
-        MeetingCard card = (MeetingCard) other;
+        ModuleCard card = (ModuleCard) other;
         return id.getText().equals(card.id.getText())
-                && meeting.equals(card.meeting);
+                && module.equals(card.module);
     }
 }

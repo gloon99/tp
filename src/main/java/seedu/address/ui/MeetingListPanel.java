@@ -23,7 +23,6 @@ public class MeetingListPanel extends UiPart<Region> {
     /**
      * Creates a {@code MeetingListPanel} with the given {@code ObservableList}.
      */
-    // TODO: Add meeting in
     public MeetingListPanel(ObservableList<Meeting> meetingList) {
         super(FXML);
         meetingListView.setItems(meetingList);

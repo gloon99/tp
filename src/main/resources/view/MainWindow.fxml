@@ -65,22 +65,22 @@
           </VBox>
 
           <VBox alignment="TOP_CENTER">
-            <Label alignment="CENTER">Meetings</Label>
-            <VBox fx:id="meetingList" minWidth="370" prefWidth="370" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
-              <padding>
-                <Insets bottom="10" left="10" right="10" top="10" />
-              </padding>
-              <StackPane fx:id="meetingListPanelPlaceholder" VBox.vgrow="ALWAYS" />
-            </VBox>
-          </VBox>
-
-          <VBox alignment="TOP_CENTER">
-            <Label alignment="CENTER">Meetings</Label>
+            <Label>Modules</Label>
             <VBox fx:id="moduleList" minWidth="370" prefWidth="370" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
               <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
               </padding>
               <StackPane fx:id="moduleListPanelPlaceholder" VBox.vgrow="ALWAYS" />
+            </VBox>
+          </VBox>
+
+          <VBox alignment="TOP_CENTER">
+            <Label>Meetings</Label>
+            <VBox fx:id="meetingList" minWidth="370" prefWidth="370" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
+              <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+              </padding>
+              <StackPane fx:id="meetingListPanelPlaceholder" VBox.vgrow="ALWAYS" />
             </VBox>
           </VBox>
 
