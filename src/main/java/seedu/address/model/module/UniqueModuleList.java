@@ -5,6 +5,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -89,6 +90,10 @@ public class UniqueModuleList implements Iterable<Module> {
         }
 
         internalList.setAll(modules);
+    }
+
+    public Optional<Module> getModule(ModuleName name) {
+        return internalList.stream().filter(mod->mod.getModuleName().equals(name)).findFirst();
     }
 
     /**

@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -11,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.meeting.Meeting;
 import seedu.address.model.meeting.MeetingName;
 import seedu.address.model.module.Module;
@@ -265,6 +267,19 @@ public class ModelManager implements Model {
     @Override
     public ObservableList<Module> getFilteredModuleList() {
         return filteredModules;
+    }
+
+    @Override
+    public void getPersonsInModule(ModuleName moduleName) throws CommandException {
+        requireAllNonNull(moduleName);
+        Optional<Module> module = moduleBook.getModule(moduleName);
+        if (module.isEmpty()) {
+            throw new CommandException("This module does not exist");
+        } else {
+            Module mod = module.get();
+            Predicate<Person> predicate = person -> mod.getClassmates().contains(person);
+            updateFilteredPersonList(predicate);
+        }
     }
 
 

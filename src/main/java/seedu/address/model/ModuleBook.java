@@ -3,6 +3,7 @@ package seedu.address.model;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import javafx.collections.ObservableList;
 import seedu.address.model.module.Module;
@@ -93,6 +94,10 @@ public class ModuleBook implements ReadOnlyModuleBook {
      */
     public void removeModule(Module key) {
         modules.remove(key);
+    }
+
+    public Optional<Module> getModule(ModuleName name) {
+        return modules.getModule(name);
     }
 
     @Override

@@ -52,7 +52,7 @@ public class AddMeetingCommand extends Command {
     private final Set<Name> nameList;
 
     /**
-     * Creates an AddMeetingCommand to add the specified {@code Meeting}
+     * Creates an AddMeetingCommand to add a meeting with specified params
      */
     public AddMeetingCommand(MeetingName meetingName, Date date, Time time, Set<Name> nameList) {
         requireAllNonNull(meetingName, date, time, nameList);
@@ -60,6 +60,18 @@ public class AddMeetingCommand extends Command {
         this.date = date;
         this.time = time;
         this.nameList = nameList;
+    }
+
+    /**
+     * Creates an AddMeetingCommand to add the specified {@code Meeting}
+     * For Testing.
+     */
+    public AddMeetingCommand(Meeting toAdd) {
+        requireAllNonNull(toAdd);
+        this.meetingName = toAdd.getMeetingName();
+        this.date = toAdd.getDate();
+        this.time = toAdd.getTime();
+        this.nameList = toAdd.getMembers().stream().map(person -> person.getName()).collect(Collectors.toSet());
     }
 
     @Override

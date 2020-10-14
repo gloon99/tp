@@ -29,7 +29,8 @@ public class PersonHasTagsAndNamePredicate implements PersonPredicate {
         return names.stream()
                 .anyMatch(keyword -> StringUtil.containsWordIgnoreCase(person.getName().fullName, keyword))
                 ||
-                person.getTags().containsAll(tags);
+                tags.stream()
+                .anyMatch(tag -> person.getTags().contains(tag));
     }
 
     @Override

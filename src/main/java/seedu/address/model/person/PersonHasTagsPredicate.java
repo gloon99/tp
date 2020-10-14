@@ -15,7 +15,8 @@ public class PersonHasTagsPredicate implements PersonPredicate {
     }
     @Override
     public boolean test(Person person) {
-        return person.getTags().containsAll(tags);
+        return tags.stream()
+                .anyMatch(tag -> person.getTags().contains(tag));
     }
 
     @Override
