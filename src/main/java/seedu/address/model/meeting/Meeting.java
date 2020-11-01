@@ -2,29 +2,46 @@ package seedu.address.model.meeting;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import seedu.address.model.commons.SpecialName;
+import seedu.address.model.module.Module;
 import seedu.address.model.person.Person;
 
 public class Meeting {
     // Identity fields
+    private final Module module;
     private final MeetingName meetingName;
+
+    //Data fields
     private final Date date;
     private final Time time;
     private final Set<Person> members = new HashSet<>();
+    private final Set<SpecialName> agendas = new HashSet<>();
+    private final Set<SpecialName> notes = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
-    public Meeting(MeetingName name, Date date, Time time, Set<Person> members) {
-        requireAllNonNull(name, date, time);
+    public Meeting(Module module, MeetingName name, Date date, Time time, Set<Person> members,
+                   Set<SpecialName> agendas, Set<SpecialName> notes) {
+        requireAllNonNull(module, name, date, time, members);
+        this.module = module;
         this.meetingName = name;
         this.date = date;
         this.time = time;
         this.members.addAll(members);
+        this.agendas.addAll(agendas);
+        this.notes.addAll(notes);
+    }
+
+    public Module getModule() {
+        return this.module;
     }
 
     public MeetingName getMeetingName() {
@@ -39,8 +56,24 @@ public class Meeting {
         return this.time;
     }
 
-    public Set<Person> getMembers() {
+    public Set<Person> getParticipants() {
         return Collections.unmodifiableSet(members);
+    }
+
+    public Set<SpecialName> getAgendas() {
+        return Collections.unmodifiableSet(agendas);
+    }
+
+    public Set<SpecialName> getNotes() {
+        return Collections.unmodifiableSet(notes);
+    }
+
+    public List<SpecialName> getAgendasAsList() {
+        return new ArrayList<>(agendas);
+    }
+
+    public List<SpecialName> getNotesAsList() {
+        return new ArrayList<>(notes);
     }
 
     /**
@@ -52,6 +85,7 @@ public class Meeting {
         }
 
         return otherMeeting != null
+                && otherMeeting.getModule().equals(getModule())
                 && otherMeeting.getMeetingName().equals(getMeetingName())
                 && otherMeeting.getDate().equals(getDate())
                 && otherMeeting.getTime().equals(getTime());
@@ -59,6 +93,10 @@ public class Meeting {
 
     public boolean isSameMeetingName(MeetingName otherMeetingName) {
         return meetingName.equals(otherMeetingName);
+    }
+
+    public String getBracketNotation() {
+        return "[" + this.module.getModuleName() + "] " + this.meetingName;
     }
 
     /**
@@ -76,28 +114,34 @@ public class Meeting {
         }
 
         Meeting otherMeeting = (Meeting) other;
-        return otherMeeting.getMeetingName().equals(getMeetingName())
+        return otherMeeting.getModule().equals(getModule())
+                && otherMeeting.getMeetingName().equals(getMeetingName())
                 && otherMeeting.getDate().equals(getDate())
                 && otherMeeting.getTime().equals(getTime())
-                && otherMeeting.getMembers().equals(getMembers());
+                && otherMeeting.getParticipants().equals(getParticipants());
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(meetingName, date, time, members);
+        return Objects.hash(module, meetingName, date, time, members);
     }
 
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append(getMeetingName())
+        builder.append("[" + getModule().getModuleName() + "] ")
+                .append(getMeetingName())
                 .append(" Date: ")
                 .append(getDate())
                 .append(" Time: ")
                 .append(getTime())
                 .append(" Members: ");
-        getMembers().forEach(member -> builder.append(member.getName() + ", "));
+        getParticipants().forEach(member -> builder.append(member.getName() + ", "));
+        builder.append(" Agendas: ");
+        getAgendas().forEach(agenda -> builder.append(agenda.toString() + ", "));
+        builder.append(" Notes: ");
+        getNotes().forEach(note -> builder.append(note.toString() + ", "));
         return builder.substring(0, builder.length() - 2);
     }
 }

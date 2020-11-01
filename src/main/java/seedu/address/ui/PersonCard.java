@@ -4,10 +4,13 @@ import java.util.Comparator;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Person.PersonType;
 
 /**
  * An UI component that displays information of a {@code Person}.
@@ -37,6 +40,8 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label email;
     @FXML
+    private ImageView hatIcon;
+    @FXML
     private FlowPane tags;
 
     /**
@@ -49,6 +54,18 @@ public class PersonCard extends UiPart<Region> {
         name.setText(person.getName().fullName);
         phone.setText(person.getPhone().value);
         email.setText(person.getEmail().value);
+        PersonType personType = person.getPersonType();
+        switch (personType) {
+        case PROFESSOR:
+        case TA:
+            Image hatImage = new Image(this.getClass().getResourceAsStream("/images/graduation_hat.png"));
+            hatIcon.setImage(hatImage);
+            break;
+        default:
+            assert personType == PersonType.CONTACT;
+            hatIcon.setVisible(false);
+        }
+
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));

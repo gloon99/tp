@@ -74,6 +74,7 @@ public class EditCommand extends Command {
 
         List<Person> filteredList = lastShownList.stream()
                 .filter(person -> person.isSameName(name)).collect(Collectors.toList());
+        assert filteredList.size() == 1;
         Person personToEdit = filteredList.get(0);
 
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
@@ -82,9 +83,18 @@ public class EditCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
+        // update address book
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, editedPerson));
+
+        // update meeting book
+        model.updatePersonInMeetingBook(personToEdit, editedPerson);
+
+        // update module book
+        model.updatePersonInModuleBook(personToEdit, editedPerson);
+
+        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, editedPerson), false, false,
+                true, false);
     }
 
     /**

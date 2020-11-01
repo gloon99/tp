@@ -76,6 +76,24 @@ public class UniqueMeetingList implements Iterable<Meeting> {
         }
     }
 
+    /**
+     * Removes the meeting from the list according to index.
+     * The index must be valid.
+     */
+    public void remove(int index) {
+        if (index >= internalList.size() || index < 0) {
+            throw new MeetingNotFoundException();
+        }
+        internalList.remove(index);
+    }
+
+    /**
+     * Returns size of the list.
+     */
+    public int size() {
+        return internalList.size();
+    }
+
     public void setMeetings(UniqueMeetingList replacement) {
         requireNonNull(replacement);
         internalList.setAll(replacement.internalList);

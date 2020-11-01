@@ -46,7 +46,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[portfolio](team/johndoe.md)]
 
 * Role: Team Lead + Developer
-* Responsibilities: Overall project coordination 
+* Responsibilities: Overall project coordination
 
 ### Goh Yee Loon
 

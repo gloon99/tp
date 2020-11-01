@@ -1,7 +1,7 @@
 package seedu.address.logic.commands;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_MEMBER;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_MODULE;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -12,9 +12,9 @@ public class ListModuleCommand extends Command {
     public static final String COMMAND_WORD = "module list";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a module to the timetable. "
             + "Parameters: "
-            + PREFIX_MEMBER + "MODULE NAME "
+            + PREFIX_MODULE + "MODULE NAME "
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_MEMBER + "CS2103 ";
+            + PREFIX_MODULE + "CS2103 ";
 
     public static final String MESSAGE_SUCCESS = "Listed Contacts in module";
 

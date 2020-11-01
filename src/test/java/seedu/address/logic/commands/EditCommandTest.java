@@ -13,12 +13,15 @@ import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalMeetings.getTypicalMeetingBook;
+import static seedu.address.testutil.TypicalMeetings.getTypicalMeetingBookWithEditedMember;
+import static seedu.address.testutil.TypicalMeetings.getTypicalMeetingBookWithMember;
 import static seedu.address.testutil.TypicalModules.getTypicalModuleBook;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.AMY;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 import static seedu.address.testutil.TypicalPersons.BOB;
 import static seedu.address.testutil.TypicalPersons.GEORGE;
+import static seedu.address.testutil.TypicalPersons.getEditedTypicalAddressBook;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import org.junit.jupiter.api.Test;
@@ -38,12 +41,16 @@ import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 
 /**
- * Contains integration tests (interaction with the Model, UndoCommand and RedoCommand) and unit tests for EditCommand.
+ * Contains integration tests (interaction with the Model, Meeting, UndoCommand and RedoCommand) and unit tests for
+ * EditCommand.
  */
 public class EditCommandTest {
 
     private Model model = new ModelManager(getTypicalAddressBook(), getTypicalMeetingBook(), getTypicalModuleBook(),
         new UserPrefs());
+
+    private Model modelWithMembersInMeetings = new ModelManager(getTypicalAddressBook(),
+            getTypicalMeetingBookWithMember(), getTypicalModuleBook(), new UserPrefs());
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
@@ -165,6 +172,23 @@ public class EditCommandTest {
                 new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build());
 
         assertCommandFailure(editCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED);
+    }
+
+    /**
+     * Edit contact name and meeting containing the contact name will also be edited.
+     */
+    @Test
+    public void execute_validNameAndNameInOneMeeting_success() {
+        Person editedPerson = new PersonBuilder(ALICE).withName("Alicia").build();
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(ALICE).withName("Alicia").build();
+        EditCommand editCommand = new EditCommand(ALICE.getName(), descriptor);
+
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, editedPerson);
+
+        Model expectedModel = new ModelManager(getEditedTypicalAddressBook(), getTypicalMeetingBookWithEditedMember(),
+                getTypicalModuleBook(), new UserPrefs());
+
+        assertCommandSuccess(editCommand, modelWithMembersInMeetings, expectedMessage, expectedModel);
     }
 
     @Test

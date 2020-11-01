@@ -14,11 +14,17 @@ import seedu.address.model.tag.Tag;
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Person {
+    public enum PersonType {
+        CONTACT,
+        PROFESSOR,
+        TA
+    }
 
     // Identity fields
     private final Name name;
     private final Phone phone;
     private final Email email;
+    private final PersonType personType;
 
     // Data fields
     private final Set<Tag> tags = new HashSet<>();
@@ -31,7 +37,24 @@ public class Person {
         this.name = name;
         this.phone = phone;
         this.email = email;
+        this.personType = parseTags(tags);
         this.tags.addAll(tags);
+    }
+
+    /**
+     * Mark a person as Professor or TA if there's a prof tag or ta tag. Otherwise set PersonType as CONTACT.
+     */
+    private PersonType parseTags(Set<Tag> tags) {
+        Tag profTag = new Tag(Tag.PROF_TAG_NAME);
+        Tag taTag = new Tag(Tag.TA_TAG_NAME);
+
+        if (tags.contains(profTag)) {
+            return PersonType.PROFESSOR;
+        } else if (tags.contains(taTag)) {
+            return PersonType.TA;
+        } else {
+            return PersonType.CONTACT;
+        }
     }
 
     public Name getName() {
@@ -44,6 +67,10 @@ public class Person {
 
     public Email getEmail() {
         return email;
+    }
+
+    public PersonType getPersonType() {
+        return personType;
     }
 
     /**

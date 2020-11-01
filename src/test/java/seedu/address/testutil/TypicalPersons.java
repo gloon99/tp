@@ -25,6 +25,10 @@ public class TypicalPersons {
             .withEmail("alice@example.com")
             .withPhone("94351253")
             .withTags("friends").build();
+    public static final Person ALICIA = new PersonBuilder().withName("Alicia")
+            .withEmail("alice@example.com")
+            .withPhone("94351253")
+            .withTags("friends").build();
     public static final Person BENSON = new PersonBuilder().withName("Benson Meier")
             .withEmail("johnd@example.com").withPhone("98765432")
             .withTags("owesMoney", "friends").build();
@@ -67,7 +71,19 @@ public class TypicalPersons {
         return ab;
     }
 
+    public static AddressBook getEditedTypicalAddressBook() {
+        AddressBook ab = new AddressBook();
+        for (Person person : getEditedTypicalPersons()) {
+            ab.addPerson(person);
+        }
+        return ab;
+    }
+
     public static List<Person> getTypicalPersons() {
         return new ArrayList<>(Arrays.asList(ALICE, BENSON, CARL, DANIEL, ELLE, FIONA, GEORGE));
+    }
+
+    public static List<Person> getEditedTypicalPersons() {
+        return new ArrayList<>(Arrays.asList(ALICIA, BENSON, CARL, DANIEL, ELLE, FIONA, GEORGE));
     }
 }

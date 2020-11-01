@@ -49,6 +49,13 @@ public interface Logic {
      */
     ReadOnlyMeetingBook getMeetingBook();
 
+    /**
+     * Returns a meeting.
+     *
+     * @see seedu.address.model.Model#getSelectedMeeting()
+     */
+    Meeting getSelectedMeeting();
+
     /** Returns an unmodifiable view of the filtered list of meetings */
     ObservableList<Meeting> getFilteredMeetingList();
 

@@ -2,7 +2,6 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,7 +26,7 @@ public class AddLabelCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a label to the person specified.\n"
             + "Parameters: NAME (must be name of person existing in ModDuke) "
-            + "[" + PREFIX_TAG + "TAG]...\n"
+            + PREFIX_TAG + "TAG\n"
             + "Example: " + COMMAND_WORD + " "
             + "Roy "
             + PREFIX_TAG + "classmate";
@@ -71,18 +70,28 @@ public class AddLabelCommand extends Command {
         }
 
         model.setPerson(personToLabel, labelledPerson);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+
+        // update meeting book
+        model.updatePersonInMeetingBook(personToLabel, labelledPerson);
+
+        // update module book
+        model.updatePersonInModuleBook(personToLabel, labelledPerson);
+
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, labelledPerson));
     }
 
     /**
-     * Creates and returns a {@code Person} with the details of {@code personToEdit}
-     * edited with {@code editPersonDescriptor}.
+     * Creates and returns a {@code Person} with the details of {@code personToLabel}
+     * edited with {@code labelPersonDescriptor}.
      */
     private static Person createLabelledPerson(Person personToLabel, LabelPersonDescriptor labelPersonDescriptor) {
         assert personToLabel != null;
 
-        Set<Tag> updatedTags = labelPersonDescriptor.getTags().orElse(personToLabel.getTags());
+        Set<Tag> updatedTags = new HashSet<>(personToLabel.getTags());
+
+        if (labelPersonDescriptor.getTags().isPresent()) {
+            updatedTags.addAll(labelPersonDescriptor.getTags().get());
+        }
 
         return new Person(personToLabel.getName(), personToLabel.getPhone(), personToLabel.getEmail(), updatedTags);
     }

@@ -107,17 +107,11 @@
 }
 
 .list-cell:filled:even {
-    -fx-background-color: #272C3F;
-    -fx-border-color: #FFEDDF;
-    -fx-border-width: 1;
-    -fx-border-style: hidden hidden solid hidden;
+    -fx-background-color: derive(#272C3F, 14%);
 }
 
 .list-cell:filled:odd {
     -fx-background-color: #272C3F;
-    -fx-border-color: #FFEDDF;
-    -fx-border-width: 1;
-    -fx-border-style: hidden hidden solid hidden;
 }
 
 .list-cell:filled:selected {
@@ -401,4 +395,52 @@
     -fx-border-radius: 2;
     -fx-background-radius: 50;
     -fx-font-size: 11;
+}
+
+.hat_icon {
+    -fx-padding: 0 100 0 10;
+    -fx-translate-x: 220;
+    -fx-translate-y: -25;
+}
+
+.selected-meeting-column {
+    -fx-background-color: derive(#121212, 24%);
+}
+
+.tab {
+    -fx-pref-width: 90;
+    -fx-pref-height: 24;
+    -fx-background-color: derive(#121212, 44%);
+    -fx-padding: 0 0 0 0;
+}
+
+.tab:hover {
+    -fx-background-color: #272C3F;
+    -fx-text-fill: #000000;
+}
+
+.tab:selected {
+    -fx-background-color: #272C3F;
+}
+
+.tab-label {
+    -fx-text-fill: #FFFFFF;
+    -fx-padding: 0 0 0 10;
+}
+
+.tab-down-button {
+    -fx-padding: 0;
+}
+
+.tab-down-button .arrow {
+    -fx-padding: 0;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: derive(#121212, 24%);
+}
+
+.custom-list .list-cell {
+    -fx-padding: 10 5 10 5;
+    -fx-text-fill: #FFFFFF;
 }

@@ -6,17 +6,18 @@ import static seedu.address.logic.commands.CommandTestUtil.LABEL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.LABEL_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
-import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalMeetings.getTypicalMeetingBook;
 import static seedu.address.testutil.TypicalModules.getTypicalModuleBook;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.Messages;
-import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.AddLabelCommand.LabelPersonDescriptor;
 import seedu.address.model.AddressBook;
 import seedu.address.model.MeetingBook;
@@ -26,6 +27,7 @@ import seedu.address.model.ModuleBook;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.LabelPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 
@@ -39,65 +41,26 @@ public class AddLabelCommandTest {
         new UserPrefs());
 
     @Test
-    public void execute_allFieldsSpecifiedUnfilteredList_success() {
-        Index indexLastPerson = Index.fromOneBased(model.getFilteredPersonList().size());
-        Person lastPerson = model.getFilteredPersonList().get(indexLastPerson.getZeroBased());
-
-        PersonBuilder personInList = new PersonBuilder(lastPerson);
-        Person labelledPerson = personInList.withTags("professor").build();
-
-        LabelPersonDescriptor descriptor = new LabelPersonDescriptorBuilder(labelledPerson).build();
-        AddLabelCommand labelCommand = new AddLabelCommand(labelledPerson.getName(), descriptor);
-
-        String expectedMessage = String.format(AddLabelCommand.MESSAGE_EDIT_PERSON_SUCCESS, labelledPerson);
-
-        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
-                                                new MeetingBook(model.getMeetingBook()),
-                                                new ModuleBook(model.getModuleBook()),
-                                                new UserPrefs());
-        expectedModel.setPerson(lastPerson, labelledPerson);
-
-        assertCommandSuccess(labelCommand, model, expectedMessage, expectedModel);
-    }
-
-    @Test
-    public void execute_emptyTagsUnfilteredList_success() {
-        Index indexLastPerson = Index.fromOneBased(model.getFilteredPersonList().size());
-        Person lastPerson = model.getFilteredPersonList().get(indexLastPerson.getZeroBased());
-
-        PersonBuilder personInList = new PersonBuilder(lastPerson);
-        Person labelledPerson = personInList.withTags().build();
-
-        LabelPersonDescriptor descriptor = new LabelPersonDescriptorBuilder(labelledPerson).build();
-        AddLabelCommand labelCommand = new AddLabelCommand(labelledPerson.getName(), descriptor);
-
-        String expectedMessage = String.format(AddLabelCommand.MESSAGE_EDIT_PERSON_SUCCESS, labelledPerson);
-
-        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
-                                                new MeetingBook(model.getMeetingBook()),
-                                                new ModuleBook(model.getModuleBook()),
-                                                new UserPrefs());
-        expectedModel.setPerson(lastPerson, labelledPerson);
-
-        assertCommandSuccess(labelCommand, model, expectedMessage, expectedModel);
-    }
-
-    @Test
     public void execute_filteredList_success() {
-        showPersonAtIndex(model, INDEX_FIRST_PERSON);
-
         Person personInFilteredList = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Person labelledPerson = new PersonBuilder(personInFilteredList).withTags("professor").build();
         AddLabelCommand labelCommand = new AddLabelCommand(labelledPerson.getName(),
                 new LabelPersonDescriptorBuilder(labelledPerson).build());
+        Set<Tag> updatedTags = new HashSet<>(personInFilteredList.getTags());
+        updatedTags.add(new Tag("professor"));
+        Person finalPerson = new Person(labelledPerson.getName(), labelledPerson.getPhone(),
+                labelledPerson.getEmail(), updatedTags);
 
-        String expectedMessage = String.format(AddLabelCommand.MESSAGE_EDIT_PERSON_SUCCESS, labelledPerson);
+        String expectedMessage = String.format(AddLabelCommand.MESSAGE_EDIT_PERSON_SUCCESS, finalPerson);
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
                                                 new MeetingBook(model.getMeetingBook()),
                                                 new ModuleBook(model.getModuleBook()),
                                                 new UserPrefs());
-        expectedModel.setPerson(personInFilteredList, labelledPerson);
+        expectedModel.setPerson(personInFilteredList, finalPerson);
+        expectedModel.updatePersonInMeetingBook(personInFilteredList, finalPerson);
+        expectedModel.updatePersonInModuleBook(personInFilteredList, finalPerson);
+        expectedModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
 
         assertCommandSuccess(labelCommand, model, expectedMessage, expectedModel);
     }
@@ -106,20 +69,6 @@ public class AddLabelCommandTest {
     public void execute_invalidPersonNameUnfilteredList_failure() {
         LabelPersonDescriptor descriptor = new LabelPersonDescriptorBuilder().build();
         AddLabelCommand labelCommand = new AddLabelCommand(new Name("Fake"), descriptor);
-
-        assertCommandFailure(labelCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED);
-    }
-
-    /**
-     * Edit filtered list where index is larger than size of filtered list,
-     * but smaller than size of address book
-     */
-    @Test
-    public void execute_invalidPersonIndexFilteredList_failure() {
-        showPersonAtIndex(model, INDEX_FIRST_PERSON);
-
-        AddLabelCommand labelCommand = new AddLabelCommand(new Name("Fake"),
-                new LabelPersonDescriptorBuilder().build());
 
         assertCommandFailure(labelCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED);
     }

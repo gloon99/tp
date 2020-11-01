@@ -8,6 +8,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.module.Module;
+import seedu.address.model.person.Person;
 
 /**
  * An UI component that displays information of a {@code Person}.
@@ -34,6 +35,8 @@ public class ModuleCard extends UiPart<Region> {
     private Label name;
     @FXML
     private FlowPane participants;
+    @FXML
+    private FlowPane teachingStaff;
 
 
     /**
@@ -45,10 +48,20 @@ public class ModuleCard extends UiPart<Region> {
         id.setText(displayedIndex + ". ");
         name.setText(module.getModuleName().getModuleName());
         module.getClassmates().stream()
+                .filter(participant -> participant.getPersonType() == Person.PersonType.CONTACT)
                 .sorted(Comparator.comparing(participant -> participant.getName().fullName))
                 .forEach(participant -> participants.getChildren()
                         .add(new Label(participant.getName().getFirstName())));
-
+        module.getClassmates().stream()
+                .filter(participant -> participant.getPersonType() == Person.PersonType.PROFESSOR)
+                .sorted(Comparator.comparing(participant -> participant.getName().fullName))
+                .forEach(participant -> teachingStaff.getChildren()
+                        .add(new Label("Professor: " + participant.getName().getFirstName() + "  ")));
+        module.getClassmates().stream()
+                .filter(participant -> participant.getPersonType() == Person.PersonType.TA)
+                .sorted(Comparator.comparing(participant -> participant.getName().fullName))
+                .forEach(participant -> teachingStaff.getChildren()
+                        .add(new Label("TA: " + participant.getName().getFirstName() + "  ")));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
@@ -121,18 +122,23 @@ public interface Model {
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
 
+    ObservableList<Person> getUpdatedFilteredPersonList(Predicate<Person> predicate);
+
+    ObservableList<Person> getUpdatedFilteredPersonList(Predicate<Person> predicate,
+                                                        List<ModuleName> modules) throws CommandException;
+
     boolean hasMeeting(Meeting meeting);
 
     void addMeeting(Meeting meeting);
 
     /**
-     * Returns true if a meeting with the same meeting name as {@code meeting} exists in the address book.
+     * Returns true if a meeting with the same meeting name as {@code meeting} exists in the meeting book.
      */
     boolean hasMeetingName(MeetingName meetingName);
 
     /**
      * Deletes the given meeting.
-     * The person must exist in the address book.
+     * The person must exist in the meeting book.
      */
     void deleteMeeting(Meeting targetMeeting);
 
@@ -140,9 +146,26 @@ public interface Model {
      * Replaces the given meeting {@code target} with {@code editedMeeting}.
      * {@code target} must exist in the meeting book.
      * The meeting identity of {@code editedMeeting} must not be the same
-     * as another existing meeting in the address book.
+     * as another existing meeting in the meeting book.
      */
     void setMeeting(Meeting target, Meeting editedMeeting);
+
+    /**
+     * Updates all meetings in the meeting book if the required person was part of any meeting.
+     * @param persons First argument is the person to update which is either deleted or replaced. If replaced, there
+     * is a second argument which is the edited person who will replace the deleted person.
+     */
+    void updatePersonInMeetingBook(Person ...persons);
+
+    /**
+     * Sets the selected Meeting for the model manager.
+     */
+    void setSelectedMeeting(Meeting target);
+
+    /**
+     * Returns a selected Meeting in an observable list.
+     */
+    Meeting getSelectedMeeting();
 
     /** Returns an unmodifiable view of the filtered meeting list */
     ObservableList<Meeting> getFilteredMeetingList();
@@ -182,4 +205,40 @@ public interface Model {
     ObservableList<Module> getFilteredModuleList();
 
     void getPersonsInModule(ModuleName moduleName) throws CommandException;
+
+    /**
+     * Updates all modules in the module book if the required person was part of any module.
+     * @param persons First argument is the person to update which is either deleted or replaced. If replaced,
+     * second argument is the edited person who will replace the deleted person.
+     */
+    void updatePersonInModuleBook(Person ...persons);
+
+    /**
+     * Updates the filter of the filtered module list to filter by the given {@code predicate}.
+     * @throws NullPointerException if {@code predicate} is null.
+     */
+    void updateFilteredModuleList(Predicate<Module> predicate);
+
+    /**
+     * Updates all meetings in the module book if the required module was part of any meetings. Will delete the meeting
+     * if all the members of the new module are not in the meeting or if the module is deleted.
+     * @param modules First argument is the module to update which is either deleted or replaced. If replaced,
+     * second argument is the edited module who will replace the deleted module.
+     */
+    void updateModuleInMeetingBook(Module ...modules);
+
+    /**
+     * Replaces the given module {@code target} with {@code editedModule}.
+     * {@code target} must exist in the module book.
+     * The module identity of {@code editedModule} must not be the same
+     * as another existing module in the module book.
+     */
+    void setModule(Module target, Module editedModule);
+
+    /**
+     * Deletes the given module.
+     * The module must exist in the module book.
+     */
+    void deleteModule(Module target);
+
 }

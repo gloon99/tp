@@ -1,0 +1,75 @@
+@startuml
+!include style.puml
+skinparam ObjectFontColor black
+skinparam ObjectBorderColor black
+skinparam ObjectBackgroundColor skyblue
+
+show members
+hide empty members
+
+title Final state after execution
+
+package Model <<Rectangle>> {
+    object "<u>:MeetingName" as MeetingName {
+        MeetingName = "Weekly Meeting"
+    }
+
+    object "<u>:ModuleName" as ModuleName {
+        moduleName = "CS2103"
+    }
+
+    object "<u>:Module" as Module {
+    }
+
+    object "<u>:Meeting" as Meeting {
+    }
+
+    object "<u>:ModelManager" as ModelManager {
+        setSelectedMeeting(Meeting m)
+        getSelectedMeeting(): Meeting
+    }
+}
+
+package Logic <<Rectangle>> {
+    object "<u>:LogicManager" as LogicManager {
+        getSelectedMeeting(): Meeting
+    }
+
+    object "<u>:CommandResult" as CommandResult {
+        triggerUpdate = true
+        execute(Model m)
+    }
+
+    object "<u>:ViewMeetingCommand" as ViewMeetingCommand {
+        execute(Model model): CommandResult
+    }
+
+    object "<u>:ViewMeetingCommandParser" as ViewMeetingCommandParser {
+        parse(String args): ViewMeetingCommand
+    }
+}
+
+package Ui <<Rectangle>> {
+    object "<u>:MainWindow" as MainWindow {
+        update()
+    }
+
+    object "<u>:MeetingDetailsPanel" as MeetingDetailsPanel {
+    }
+}
+
+MeetingName --> Meeting : meetingName
+ModuleName --> Module : moduleName
+Module --> Meeting : module
+Meeting --> ModelManager : selectedMeeting
+Meeting --> MeetingDetailsPanel : meeting
+LogicManager --> MainWindow : logic
+ModelManager --> LogicManager : model
+MeetingDetailsPanel --> MainWindow : selectedMeetingPlaceholder
+ModuleName --> ViewMeetingCommand : targetModuleName
+MeetingName --> ViewMeetingCommand : targetMeetingName
+ViewMeetingCommand ..> CommandResult : creates >
+CommandResult ..> ModelManager : execute >
+ViewMeetingCommandParser ..> ViewMeetingCommand : creates >
+
+@enduml

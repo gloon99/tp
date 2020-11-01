@@ -1,17 +1,36 @@
 package seedu.address.testutil;
 
+import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.ALICIA;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import seedu.address.model.MeetingBook;
 import seedu.address.model.meeting.Meeting;
+import seedu.address.model.person.Person;
 
 public class TypicalMeetings {
 
+    public static final Meeting CS2103_NO_MEMBERS = new MeetingBuilder().withName("CS2103")
+            .withDate("2020-10-07")
+            .withTime("10:00")
+            .withMembers(new HashSet<Person>(Arrays.asList(ALICE)))
+            .build();
+
     public static final Meeting CS2103 = new MeetingBuilder().withName("CS2103")
             .withDate("2020-10-07")
-            .withTime("10:00").build();
+            .withTime("10:00")
+            .build();
+
+    // Edited name from Alice Pauline to Alicia
+    public static final Meeting CS2103_EDITED_MEMBER = new MeetingBuilder().withName("CS2103")
+            .withDate("2020-10-07")
+            .withTime("10:00")
+            .withMembers(new HashSet<Person>(Arrays.asList(ALICIA)))
+            .build();
 
     /*
     // Manually added
@@ -29,6 +48,7 @@ public class TypicalMeetings {
 
     private TypicalMeetings() {} // prevents instantiation
      */
+    // meeting has no members
     public static MeetingBook getTypicalMeetingBook() {
         MeetingBook mb = new MeetingBook();
         for (Meeting meeting : getTypicalMeetings()) {
@@ -37,7 +57,31 @@ public class TypicalMeetings {
         return mb;
     }
 
+    // meeting has one member
+    public static MeetingBook getTypicalMeetingBookWithMember() {
+        MeetingBook mb = new MeetingBook();
+        for (Meeting meeting : getTypicalMeetingsWithMembers()) {
+            mb.addMeeting(meeting);
+        }
+        return mb;
+    }
+
+    // meeting has edited member
+    public static MeetingBook getTypicalMeetingBookWithEditedMember() {
+        MeetingBook mb = new MeetingBook();
+        for (Meeting meeting : getTypicalMeetingsWithEditedMember()) {
+            mb.addMeeting(meeting);
+        }
+        return mb;
+    }
+
     public static List<Meeting> getTypicalMeetings() {
         return new ArrayList<>(Arrays.asList(CS2103));
+    }
+    public static List<Meeting> getTypicalMeetingsWithMembers() {
+        return new ArrayList<>(Arrays.asList(CS2103_NO_MEMBERS));
+    }
+    public static List<Meeting> getTypicalMeetingsWithEditedMember() {
+        return new ArrayList<>(Arrays.asList(CS2103_EDITED_MEMBER));
     }
 }

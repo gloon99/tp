@@ -1,0 +1,14 @@
+@startuml
+
+start
+:User triggers Autocomplete Mode;
+:User types out prefix;
+:Sets Prefix using Tab / Shift-Tab;
+
+while() is ([else])
+:Cycle through suggestions;
+endwhile ([user accepts\n suggestions])
+
+:Press Enter to lock in suggestion;
+stop
+@enduml

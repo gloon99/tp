@@ -75,12 +75,12 @@ public class AddLabelCommandParserTest {
     }
 
     @Test
-    public void parse_resetTags_success() {
+    public void parse_emptyTags_failure() {
         String userInput = VALID_NAME_AMY + TAG_EMPTY;
 
         LabelPersonDescriptor descriptor = new LabelPersonDescriptorBuilder().withTags().build();
         AddLabelCommand expectedCommand = new AddLabelCommand(new Name(VALID_NAME_AMY), descriptor);
 
-        assertParseSuccess(parser, userInput, expectedCommand);
+        assertParseFailure(parser, userInput, MESSAGE_INVALID_FORMAT);
     }
 }

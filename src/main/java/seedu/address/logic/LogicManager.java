@@ -95,6 +95,11 @@ public class LogicManager implements Logic {
     public ReadOnlyMeetingBook getMeetingBook() {
         return model.getMeetingBook();
     }
+
+    @Override
+    public Meeting getSelectedMeeting() {
+        return model.getSelectedMeeting(); }
+
     @Override
     public ReadOnlyModuleBook getModuleBook() {
         return model.getModuleBook();
@@ -109,7 +114,6 @@ public class LogicManager implements Logic {
     public ObservableList<Meeting> getFilteredMeetingList() {
         return model.getFilteredMeetingList();
     }
-
 
     @Override
     public Path getAddressBookFilePath() {

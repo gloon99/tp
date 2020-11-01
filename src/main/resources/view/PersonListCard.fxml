@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
@@ -31,5 +32,7 @@
       <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" />
       <Label fx:id="email" styleClass="cell_small_label" text="\$email" />
     </VBox>
+    <ImageView fx:id="hatIcon" styleClass="hat_icon" disable="true" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+    </ImageView>
   </GridPane>
 </HBox>

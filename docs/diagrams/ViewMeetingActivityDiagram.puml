@@ -1,0 +1,31 @@
+@startuml
+!include style.puml
+
+start
+:User executes command;
+
+if () then ([command is invalid])
+    :Throw ParseException;
+    end
+else ([else])
+    :Command is executed;
+if () then ([command is a edit
+ or delete command])
+    if () then ([command
+    affects
+    selected meeting])
+        :Update selected meeting;
+    else([else])
+    endif
+    :CommandResult is created
+    with triggerUpdate set to true;
+    :MeetingDetailsPanel Ui gets updated;
+else ([else])
+    :CommandResult is created
+    with triggerUpdate set to false;
+endif
+
+
+
+stop
+@enduml

@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.stage.Stage?>
 
-<fx:root minHeight="600" minWidth="550" onCloseRequest="#handleExit" title="Address App" type="javafx.stage.Stage" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root minHeight="600" minWidth="550" onCloseRequest="#handleExit" title="ModDuke" type="javafx.stage.Stage" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <icons>
-    <Image url="@/images/address_book_32.png" />
+    <Image url="@/images/graduation_hat.png" />
   </icons>
   <scene>
     <Scene>
@@ -50,13 +50,13 @@
           <padding>
             <Insets bottom="5" left="20" right="10" top="5" />
           </padding>
-          <Label styleClass="label-title">ModDuke</Label>
+          <Label styleClass="label-title">Modduke</Label>
         </StackPane>
 
         <HBox styleClass="pane-with-border" HBox.hgrow="ALWAYS">
           <VBox alignment="TOP_CENTER">
             <Label>Contacts</Label>
-            <VBox fx:id="personList" minWidth="370" prefWidth="370" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
+            <VBox fx:id="personList" minWidth="300" prefWidth="300" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
               <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
               </padding>
@@ -66,7 +66,7 @@
 
           <VBox alignment="TOP_CENTER">
             <Label>Modules</Label>
-            <VBox fx:id="moduleList" minWidth="370" prefWidth="370" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
+            <VBox fx:id="moduleList" minWidth="300" prefWidth="300" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
               <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
               </padding>
@@ -76,7 +76,7 @@
 
           <VBox alignment="TOP_CENTER">
             <Label>Meetings</Label>
-            <VBox fx:id="meetingList" minWidth="370" prefWidth="370" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
+            <VBox fx:id="meetingList" minWidth="300" prefWidth="300" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
               <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
               </padding>
@@ -84,8 +84,17 @@
             </VBox>
           </VBox>
 
-        </HBox>
+          <VBox alignment="TOP_CENTER">
+            <Label>Selected Meeting</Label>
+            <VBox fx:id="selectedMeeting"  minWidth="300" prefWidth="300" styleClass="pane-with-border" VBox.vgrow="ALWAYS">
+              <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+              </padding>
+              <StackPane fx:id="selectedMeetingPlaceholder" VBox.vgrow="ALWAYS" />
+            </VBox>
+          </VBox>
 
+        </HBox>
         <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
       </VBox>
     </Scene>

@@ -5,10 +5,12 @@ import static java.util.Objects.requireNonNull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.commons.SpecialName;
 import seedu.address.model.meeting.Date;
 import seedu.address.model.meeting.MeetingName;
 import seedu.address.model.meeting.Time;
@@ -54,7 +56,22 @@ public class ParserUtil {
     }
 
     /**
-     * Parses {@code Collection<String> tags} into a {@code Set<Tag>}.
+     * Parses a {@code String name} into a {@code SpecialName}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code name} is invalid.
+     */
+    public static SpecialName parseSpecialName(String name) throws ParseException {
+        requireNonNull(name);
+        String trimmedName = name.trim();
+        if (!SpecialName.isValidName(trimmedName)) {
+            throw new ParseException(SpecialName.MESSAGE_CONSTRAINTS);
+        }
+        return new SpecialName(trimmedName);
+    }
+
+    /**
+     * Parses {@code Collection<String> names} into a {@code Set<String>}.
      */
     public static Set<String> parseAllNames(Collection<String> names) throws ParseException {
         requireNonNull(names);
@@ -112,6 +129,9 @@ public class ParserUtil {
      */
     public static Set<Tag> parseTags(Collection<String> tags) throws ParseException {
         requireNonNull(tags);
+        if (tags.contains(Tag.PROF_TAG_NAME) && tags.contains(Tag.TA_TAG_NAME)) {
+            throw new ParseException(Tag.UNIQUE_CONSTRAINT);
+        }
         final Set<Tag> tagSet = new HashSet<>();
         for (String tagName : tags) {
             tagSet.add(parseTag(tagName));
@@ -147,6 +167,20 @@ public class ParserUtil {
             throw new ParseException(ModuleName.MESSAGE_CONSTRAINTS);
         }
         return new ModuleName(trimmedName);
+    }
+
+    /**
+     * Parses {@code Collection<String> modules} into a {@code Set<ModuleName>}.
+     */
+    public static Set<ModuleName> parseAllModules(Collection<String> modules) throws ParseException {
+        requireNonNull(modules);
+        boolean isValid = modules.stream()
+                .allMatch(name -> ModuleName.isValidModuleName(name.trim()));
+        if (!isValid) {
+            throw new ParseException(ModuleName.MESSAGE_CONSTRAINTS);
+        }
+
+        return modules.stream().map(ModuleName::new).collect(Collectors.toSet());
     }
 
     /**
@@ -189,5 +223,17 @@ public class ParserUtil {
             personNameSet.add(parseName(personName));
         }
         return personNameSet;
+    }
+
+    /**
+     * Parses {@code Collection<String> names} into a {@code Set<SpecialName>}.
+     */
+    public static Set<SpecialName> parseSpecialNames(Collection<String> names) throws ParseException {
+        requireNonNull(names);
+        final Set<SpecialName> nameSet = new HashSet<>();
+        for (String name : names) {
+            nameSet.add(parseSpecialName(name));
+        }
+        return nameSet;
     }
 }

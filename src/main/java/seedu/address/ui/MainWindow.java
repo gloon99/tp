@@ -1,7 +1,9 @@
 package seedu.address.ui;
 
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
@@ -21,7 +23,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
  * The Main Window. Provides the basic application layout containing
  * a menu bar and space where other JavaFX elements can be placed.
  */
-public class MainWindow extends UiPart<Stage> {
+public class MainWindow extends UiPart<Stage> implements Observer {
 
     private static final String FXML = "MainWindow.fxml";
 
@@ -29,6 +31,7 @@ public class MainWindow extends UiPart<Stage> {
 
     private Stage primaryStage;
     private Logic logic;
+    private HostServices hostServices;
 
     // Independent Ui parts residing in this Ui container
     private PersonListPanel personListPanel;
@@ -36,6 +39,7 @@ public class MainWindow extends UiPart<Stage> {
     private ModuleListPanel moduleListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
+    private TimelineWindow timelineWindow;
 
     @FXML
     private StackPane commandBoxPlaceholder;
@@ -58,15 +62,19 @@ public class MainWindow extends UiPart<Stage> {
     @FXML
     private StackPane statusbarPlaceholder;
 
+    @FXML
+    private StackPane selectedMeetingPlaceholder;
+
     /**
      * Creates a {@code MainWindow} with the given {@code Stage} and {@code Logic}.
      */
-    public MainWindow(Stage primaryStage, Logic logic) {
+    public MainWindow(Stage primaryStage, Logic logic, HostServices hostServices) {
         super(FXML, primaryStage);
 
         // Set dependencies
         this.primaryStage = primaryStage;
         this.logic = logic;
+        this.hostServices = hostServices;
 
         // Configure the UI
         setWindowDefaultSize(logic.getGuiSettings());
@@ -74,6 +82,7 @@ public class MainWindow extends UiPart<Stage> {
         setAccelerators();
 
         helpWindow = new HelpWindow();
+        timelineWindow = new TimelineWindow(logic);
     }
 
     public Stage getPrimaryStage() {
@@ -133,8 +142,19 @@ public class MainWindow extends UiPart<Stage> {
         StatusBarFooter statusBarFooter = new StatusBarFooter(logic.getAddressBookFilePath());
         statusbarPlaceholder.getChildren().add(statusBarFooter.getRoot());
 
-        CommandBox commandBox = new CommandBox(this::executeCommand);
+        AutocompleteCommandBox commandBox = new AutocompleteCommandBox(this::executeCommand);
+        commandBox.setupAutocompletionListeners("cname/", () -> logic.getFilteredPersonList().stream()
+                .map(p -> p.getName().fullName).collect(Collectors.toList()));
+        commandBox.setupAutocompletionListeners("mdname/", () -> logic.getFilteredModuleList().stream()
+                .map(m -> m.getModuleName().getModuleName()).collect(Collectors.toList()));
+        commandBox.setupAutocompletionListeners("mtname/", () -> logic.getFilteredMeetingList().stream()
+                .map(m -> m.getMeetingName().meetingName).collect(Collectors.toList()));
         commandBoxPlaceholder.getChildren().add(commandBox.getRoot());
+
+        if (logic.getSelectedMeeting() != null) {
+            MeetingDetailsPanel selectedMeeting = new MeetingDetailsPanel(logic.getSelectedMeeting(), 1);
+            selectedMeetingPlaceholder.getChildren().add(selectedMeeting.getRoot());
+        }
     }
 
     /**
@@ -155,9 +175,48 @@ public class MainWindow extends UiPart<Stage> {
     @FXML
     public void handleHelp() {
         if (!helpWindow.isShowing()) {
-            helpWindow.show();
+            helpWindow.show(hostServices);
         } else {
             helpWindow.focus();
+        }
+    }
+
+    @Override
+    public void update() {
+        logger.info("UI update triggered");
+        if (logic.getSelectedMeeting() == null) {
+            selectedMeetingPlaceholder.getChildren().remove(0);
+        } else {
+            MeetingDetailsPanel selectedMeeting = new MeetingDetailsPanel(logic.getSelectedMeeting(),
+                    logic.getFilteredMeetingList().indexOf(logic.getSelectedMeeting()) + 1);
+            if (selectedMeetingPlaceholder.getChildren().size() == 1) {
+                selectedMeetingPlaceholder.getChildren().set(0, selectedMeeting.getRoot());
+            } else {
+                selectedMeetingPlaceholder.getChildren().add(selectedMeeting.getRoot());
+            }
+        }
+        updateTimeline();
+    }
+
+    /**
+     * Updates the timeline window whenever a change is made in meetings
+     */
+    public void updateTimeline() {
+        timelineWindow.hide();
+        timelineWindow = this.timelineWindow.updateLogic(logic);
+    }
+
+    /**
+     * Opens the timeline window or focuses on it if it's already opened.
+     */
+    @FXML
+    public void handleToggle() {
+        logger.info("UI toggle triggered");
+
+        if (!timelineWindow.isShowing()) {
+            timelineWindow.show();
+        } else {
+            timelineWindow.focus();
         }
     }
 
@@ -174,6 +233,7 @@ public class MainWindow extends UiPart<Stage> {
                 (int) primaryStage.getX(), (int) primaryStage.getY());
         logic.setGuiSettings(guiSettings);
         helpWindow.hide();
+        timelineWindow.hide();
         primaryStage.hide();
     }
 
@@ -198,6 +258,14 @@ public class MainWindow extends UiPart<Stage> {
 
             if (commandResult.isExit()) {
                 handleExit();
+            }
+
+            if (commandResult.isTriggerUpdate()) {
+                update();
+            }
+
+            if (commandResult.isToggle()) {
+                handleToggle();
             }
 
             return commandResult;

@@ -7,29 +7,34 @@ import static seedu.address.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import static seedu.address.testutil.Assert.assertThrows;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+//import java.util.Arrays;
+//import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.AddLabelCommand;
 import seedu.address.logic.commands.AddLabelCommand.LabelPersonDescriptor;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.ClearLabelCommand;
 import seedu.address.logic.commands.DeleteCommand;
+import seedu.address.logic.commands.DeleteLabelCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.FullNameMatchesKeywordPredicate;
 import seedu.address.model.person.Person;
-//import seedu.address.model.person.PersonHasTagsAndNamePredicate;
-//import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.LabelPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
 import seedu.address.testutil.TypicalPersons;
-
-//import java.util.Arrays;
-//import java.util.List;
 
 public class AddressBookParserTest {
 
@@ -51,8 +56,10 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_delete() throws Exception {
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
-                DeleteCommand.COMMAND_WORD + " " + TypicalPersons.ALICE.getName().toString());
-        assertEquals(new DeleteCommand(TypicalPersons.ALICE.getName()), command);
+                DeleteCommand.COMMAND_WORD + " n/" + TypicalPersons.ALICE.getName().toString());
+        ArrayList<String> nameOne = new ArrayList<>();
+        nameOne.add(TypicalPersons.ALICE.getName().toString());
+        assertEquals(new DeleteCommand(new FullNameMatchesKeywordPredicate(nameOne), new ArrayList<>()), command);
     }
 
     @Test
@@ -65,12 +72,31 @@ public class AddressBookParserTest {
         assertEquals(new EditCommand(TypicalPersons.ALICE.getName(), descriptor), command);
     }
 
-    @Test public void parseCommand_label() throws Exception {
+    @Test
+    public void parseCommand_labelAdd() throws Exception {
         Person person = new PersonBuilder().build();
         LabelPersonDescriptor descriptor = new LabelPersonDescriptorBuilder(person).build();
         AddLabelCommand command = (AddLabelCommand) parser.parseCommand(AddLabelCommand.COMMAND_WORD + " "
             + person.getName() + " " + PersonUtil.getLabelPersonDescriptorDetails(descriptor));
         assertEquals(new AddLabelCommand(person.getName(), descriptor), command);
+    }
+
+    @Test
+    public void parseCommand_labelDelete() throws Exception {
+        Person person = new PersonBuilder().build();
+        Set<Tag> tags = new HashSet<>();
+        tags.add(new Tag("Tag"));
+        DeleteLabelCommand command = (DeleteLabelCommand) parser.parseCommand(DeleteLabelCommand.COMMAND_WORD + " "
+                + person.getName() + " " + "t/Tag");
+        assertEquals(new DeleteLabelCommand(person.getName(), tags), command);
+    }
+
+    @Test
+    public void parseCommand_labelClear() throws Exception {
+        Person person = new PersonBuilder().build();
+        ClearLabelCommand command = (ClearLabelCommand) parser.parseCommand(ClearLabelCommand.COMMAND_WORD + " "
+                + person.getName());
+        assertEquals(new ClearLabelCommand(person.getName()), command);
     }
 
     @Test

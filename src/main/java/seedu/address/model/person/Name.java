@@ -57,6 +57,7 @@ public class Name {
     }
 
     public String getFirstName() {
-        return fullName.substring(0, fullName.indexOf(" "));
+        int spaceIndex = fullName.indexOf(" ");
+        return spaceIndex == -1 ? fullName : fullName.substring(0, spaceIndex);
     }
 }

@@ -42,6 +42,10 @@ public class AddLabelCommandParser implements Parser<AddLabelCommand> {
 
         parseTagsForEdit(argMultimap.getAllValues(PREFIX_TAG)).ifPresent(labelPersonDescriptor::setTags);
 
+        if (labelPersonDescriptor.getTags().isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddLabelCommand.MESSAGE_USAGE));
+        }
+
         return new AddLabelCommand(name, labelPersonDescriptor);
     }
 
@@ -53,7 +57,7 @@ public class AddLabelCommandParser implements Parser<AddLabelCommand> {
     private Optional<Set<Tag>> parseTagsForEdit(Collection<String> tags) throws ParseException {
         assert tags != null;
 
-        if (tags.isEmpty()) {
+        if (tags.size() == 1 && tags.contains("")) {
             return Optional.empty();
         }
         Collection<String> tagSet = tags.size() == 1 && tags.contains("") ? Collections.emptySet() : tags;

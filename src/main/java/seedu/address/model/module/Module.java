@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
+import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 
 public class Module {
@@ -14,20 +15,33 @@ public class Module {
     /**
      * Every field must be present and not null.
      */
-    public Module(ModuleName name, Set<Person> classmates) {
-        requireAllNonNull(name);
-        this.moduleName = name;
+    public Module(ModuleName moduleName, Set<Person> classmates) {
+        requireAllNonNull(moduleName);
+        this.moduleName = moduleName;
         this.classmates = classmates;
     }
 
     public ModuleName getModuleName() {
-        return moduleName;
+        return this.moduleName;
     }
 
     public Set<Person> getClassmates() {
         return Collections.unmodifiableSet(classmates);
     }
 
+    /**
+     * checks if the module contains the classmate of the given name
+     * @param name name of the classmate
+     * @return true if classmate is in module, false otherwise
+     */
+    public boolean hasClassmate(Name name) {
+        for (Person person : getClassmates()) {
+            if (person.isSameName(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Returns true if both modules have the same name, date and time.
@@ -38,15 +52,15 @@ public class Module {
         }
 
         return otherModule != null
-                && otherModule.getModuleName().getModuleName().equals(getModuleName().getModuleName());
+                && otherModule.getModuleName().getModuleName().equals(getModuleName().getModuleName())
+                && otherModule.getClassmates().equals(getClassmates());
     }
 
     /**
      * Returns true if both modules have the same name
      */
-    public boolean isSameName(ModuleName otherModule) {
-        return otherModule != null
-                && otherModule.getModuleName().equals(getModuleName());
+    public boolean isSameName(ModuleName otherModuleName) {
+        return moduleName.equals(otherModuleName);
     }
 
     /**
@@ -59,13 +73,12 @@ public class Module {
             return true;
         }
 
-        if (!(other instanceof seedu.address.model.meeting.Meeting)) {
+        if (!(other instanceof Module)) {
             return false;
         }
 
-        seedu.address.model.meeting.Meeting otherMeeting = (seedu.address.model.meeting.Meeting) other;
-        return otherMeeting.getMeetingName().equals(getModuleName())
-                && otherMeeting.getMembers().equals(getClassmates());
+        Module otherModule = (Module) other;
+        return otherModule.getModuleName().equals(getModuleName());
     }
 
     @Override
