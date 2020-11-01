@@ -5,11 +5,14 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 
 public class Date {
-    public static final String MESSAGE_CONSTRAINTS =
-            "Dates should be in the format yyyy-mm-dd";
+    public static final String MESSAGE_FORMAT_CONSTRAINTS = "Dates should be in the format yyyy-mm-dd";
+    public static final String MESSAGE_DATE_CONSTRAINTS = "The date given should be a valid date";
+    public static final String MESSAGE_CONSTRAINTS = "Dates should be in the format yyyy-mm-dd and "
+            + "the date given should be a valid date";
     public static final String VALIDATION_REGEX = "\\d{3,}";
     public static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("d LLL (EEE)");
@@ -25,7 +28,8 @@ public class Date {
      */
     public Date(String date) {
         requireNonNull(date);
-        checkArgument(isValidDate(date), MESSAGE_CONSTRAINTS);
+        checkArgument(isValidFormat(date), MESSAGE_FORMAT_CONSTRAINTS);
+        checkArgument(isValidDate(date), MESSAGE_DATE_CONSTRAINTS);
         this.value = date;
         this.date = LocalDate.parse(date, INPUT_FORMAT);
     }
@@ -35,13 +39,28 @@ public class Date {
     }
 
     /**
-     * Returns true if a given string is a valid date.
+     * Returns true if a given string is in a valid date format.
      */
-    public static boolean isValidDate(String test) {
+    private static boolean isValidFormat(String test) {
         return test.length() == 10
                 && test.charAt(4) == '-'
                 && test.charAt(7) == '-';
-        //todo: check if date exists
+    }
+
+    /**
+     * Returns true if a given string is a valid date.
+     */
+    private static boolean isValidDate(String test) {
+        try {
+            LocalDate.parse(test);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isValidDateInput(String test) {
+        return isValidFormat(test) && isValidDate(test);
     }
 
     @Override

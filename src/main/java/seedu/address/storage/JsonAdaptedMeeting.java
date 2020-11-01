@@ -108,7 +108,7 @@ public class JsonAdaptedMeeting {
         if (date == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Date.class.getSimpleName()));
         }
-        if (!Date.isValidDate(date)) {
+        if (!Date.isValidDateInput(date)) {
             throw new IllegalValueException(Date.MESSAGE_CONSTRAINTS);
         }
         final Date modelDate = new Date(date);
@@ -116,7 +116,7 @@ public class JsonAdaptedMeeting {
         if (time == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Time.class.getSimpleName()));
         }
-        if (!Time.isValidTime(time)) {
+        if (!Time.isValidTimeInput(time)) {
             throw new IllegalValueException(Time.MESSAGE_CONSTRAINTS);
         }
         final Time modelTime = new Time(time);

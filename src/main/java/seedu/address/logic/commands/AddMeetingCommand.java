@@ -41,7 +41,7 @@ public class AddMeetingCommand extends Command {
             + PREFIX_NAME + "MEETING NAME "
             + PREFIX_DATE + "DATE "
             + PREFIX_TIME + "TIME "
-            + "[" + PREFIX_PARTICIPANT + "PARTICIPANTS]... "
+            + PREFIX_PARTICIPANT + "PARTICIPANTS... "
             + "[" + PREFIX_AGENDA + "AGENDAS]... "
             + "[" + PREFIX_NOTE + "NOTES]...\n"
             + "Example: " + COMMAND_WORD + " "
@@ -58,6 +58,8 @@ public class AddMeetingCommand extends Command {
     public static final String MESSAGE_DUPLICATE_MEETING = "The meeting [%s] %s already exists in the meeting book";
     public static final String MESSAGE_NONEXISTENT_PERSON = "The following person(s): %s are not in the module %s";
     public static final String MESSAGE_NONEXISTENT_MODULE = "The given module is not in your module list";
+    public static final String MESSAGE_CONFLICTING_MEETING_TIMES =
+            "The meeting [%s] %s is already occurring at the same date and time";
 
     private final ModuleName moduleName;
     private final MeetingName meetingName;
@@ -114,6 +116,11 @@ public class AddMeetingCommand extends Command {
             if (meeting.getModule().equals(module) && meeting.getMeetingName().equals(meetingName)) {
                 throw new CommandException(
                         String.format(MESSAGE_DUPLICATE_MEETING, module.getModuleName(), meetingName));
+            }
+            if (meeting.getDate().equals(date) && meeting.getTime().equals(time)) {
+                throw new CommandException(
+                        String.format(MESSAGE_CONFLICTING_MEETING_TIMES, module.getModuleName(),
+                                meeting.getMeetingName()));
             }
         }
 

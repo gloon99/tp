@@ -5,12 +5,15 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Time {
-    public static final String MESSAGE_CONSTRAINTS =
-            "Times should be in the format HH:MM";
+    public static final String MESSAGE_FORMAT_CONSTRAINTS = "Times should be in the format hh:mm";
+    public static final String MESSAGE_TIME_CONSTRAINTS = "The time given should be a valid time";
+    public static final String MESSAGE_CONSTRAINTS = "Times should be in the format hh:mm "
+            + "the time given should be a valid time";
     public static final String VALIDATION_REGEX = "\\d{3,}";
-    public static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+    public static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("kk:mm");
     public static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("h:mm a");
 
     // For DB storage. See Json AdaptedMeeting for use.
@@ -24,7 +27,8 @@ public class Time {
      */
     public Time(String time) {
         requireNonNull(time);
-        checkArgument(isValidTime(time), MESSAGE_CONSTRAINTS);
+        checkArgument(isValidFormat(time), MESSAGE_FORMAT_CONSTRAINTS);
+        checkArgument(isValidTime(time), MESSAGE_TIME_CONSTRAINTS);
         this.value = time;
         this.time = LocalTime.parse(time, INPUT_FORMAT);
     }
@@ -34,12 +38,26 @@ public class Time {
     }
 
     /**
-     * Returns true if a given string is a valid phone number.
+     * Returns true if a given string is in a valid time format.
      */
-    public static boolean isValidTime(String test) {
-        return test.length() == 5
-                && test.charAt(2) == ':';
-        //todo: check if time is valid
+    private static boolean isValidFormat(String test) {
+        return test.length() == 5 && test.charAt(2) == ':';
+    }
+
+    /**
+     * Returns true if a given string is a valid time.
+     */
+    private static boolean isValidTime(String test) {
+        try {
+            LocalTime.parse(test);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isValidTimeInput(String test) {
+        return isValidFormat(test) && isValidTime(test);
     }
 
     @Override

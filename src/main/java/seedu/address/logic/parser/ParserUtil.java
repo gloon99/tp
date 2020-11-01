@@ -192,7 +192,7 @@ public class ParserUtil {
     public static Date parseDate(String date) throws ParseException {
         requireNonNull(date);
         String trimmedDate = date.trim();
-        if (!Date.isValidDate(trimmedDate)) {
+        if (!Date.isValidDateInput(trimmedDate)) {
             throw new ParseException(Date.MESSAGE_CONSTRAINTS);
         }
         return new Date(trimmedDate);
@@ -207,7 +207,7 @@ public class ParserUtil {
     public static Time parseTime(String time) throws ParseException {
         requireNonNull(time);
         String trimmedTime = time.trim();
-        if (!Time.isValidTime(trimmedTime)) {
+        if (!Time.isValidTimeInput(trimmedTime)) {
             throw new ParseException(Time.MESSAGE_CONSTRAINTS);
         }
         return new Time(trimmedTime);

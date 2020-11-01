@@ -86,9 +86,7 @@ public class Meeting {
 
         return otherMeeting != null
                 && otherMeeting.getModule().equals(getModule())
-                && otherMeeting.getMeetingName().equals(getMeetingName())
-                && otherMeeting.getDate().equals(getDate())
-                && otherMeeting.getTime().equals(getTime());
+                && otherMeeting.getMeetingName().equals(getMeetingName());
     }
 
     public boolean isSameMeetingName(MeetingName otherMeetingName) {

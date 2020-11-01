@@ -51,14 +51,17 @@ public class EditMeetingCommand extends Command {
             + "[" + PREFIX_NOTE + "NEW_NOTE]...\n"
             + "Example: " + COMMAND_WORD + " m/CS2103 n/Project Meeting "
             + PREFIX_DATE + "2020-10-10 "
-            + PREFIX_TIME + "11:30"
-            + PREFIX_AGENDA + "Discuss project direction"
+            + PREFIX_TIME + "11:30 "
+            + PREFIX_AGENDA + "Discuss project direction "
             + PREFIX_NOTE + "Alex will be coming late";
 
     public static final String MESSAGE_EDIT_MEETING_SUCCESS = "Edited Meeting: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_MEETING = "This meeting already exists in the address book.";
-    public static final String MESSAGE_NONEXISTENT_PERSON = "The following person(s): %s are not in your contacts";
+    public static final String MESSAGE_DUPLICATE_MEETING =
+            "The meeting [%s] %s already exists in the meeting book";
+    public static final String MESSAGE_NONEXISTENT_PERSON = "The following person(s): %s are not in your contacts.";
+    public static final String MESSAGE_CONFLICTING_MEETING_TIMES =
+            "The meeting [%s] %s is already occurring at the same date and time";
 
     private final ModuleName targetModuleName;
     private final MeetingName targetMeetingName;
@@ -110,8 +113,28 @@ public class EditMeetingCommand extends Command {
         Meeting editedMeeting = createEditedMeeting(meetingToEdit, editMeetingDescriptor, model);
 
         if (!meetingToEdit.isSameMeeting(editedMeeting) && model.hasMeeting(editedMeeting)) {
-            throw new CommandException(MESSAGE_DUPLICATE_MEETING);
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_MEETING, module.getModuleName(),
+                    meetingToEdit.getMeetingName()));
         }
+
+        if (editMeetingDescriptor.getDate().isPresent() || editMeetingDescriptor.getTime().isPresent()) {
+            for (Meeting meeting : model.getFilteredMeetingList()) {
+                if (((editMeetingDescriptor.getDate().isPresent())
+                        && (meeting.getDate().equals(editMeetingDescriptor.getDate().get())
+                                && meeting.getTime().equals(editedMeeting.getTime())))
+                    || ((editMeetingDescriptor.getTime().isPresent())
+                        && (meeting.getDate().equals(editedMeeting.getDate())
+                                && meeting.getTime().equals(editMeetingDescriptor.getTime().get())))
+                    || ((editMeetingDescriptor.getDate().isPresent() && editMeetingDescriptor.getTime().isPresent())
+                        && (meeting.getDate().equals(editMeetingDescriptor.getDate().get())
+                                && meeting.getTime().equals(editMeetingDescriptor.getTime().get())))) {
+                    throw new CommandException(
+                            String.format(MESSAGE_CONFLICTING_MEETING_TIMES, meeting.getModule().getModuleName(),
+                                    meeting.getMeetingName()));
+                }
+            }
+        }
+
 
         model.setMeeting(meetingToEdit, editedMeeting);
         model.updateFilteredMeetingList(PREDICATE_SHOW_ALL_MEETINGS);
