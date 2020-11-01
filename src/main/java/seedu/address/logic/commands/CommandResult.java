@@ -20,18 +20,19 @@ public class CommandResult {
     /** The application should exit. */
     private final boolean exit;
 
-    /** The view of the application should be toggled. */
-    private final boolean toggle;
+    /** The view of the timeline window should be shown. */
+    private final boolean showTimeline;
 
     /**
      * Constructs a {@code CommandResult} with the specified fields.
      */
-    public CommandResult(String feedbackToUser, boolean showHelp, boolean exit, boolean triggerUpdate, boolean toggle) {
+    public CommandResult(String feedbackToUser, boolean showHelp, boolean exit, boolean triggerUpdate,
+                         boolean showTimeline) {
         this.feedbackToUser = requireNonNull(feedbackToUser);
         this.showHelp = showHelp;
         this.exit = exit;
         this.triggerUpdate = triggerUpdate;
-        this.toggle = toggle;
+        this.showTimeline = showTimeline;
     }
 
     /**
@@ -58,8 +59,8 @@ public class CommandResult {
         return triggerUpdate;
     }
 
-    public boolean isToggle() {
-        return toggle;
+    public boolean isShowTimeline() {
+        return showTimeline;
     }
 
     @Override
